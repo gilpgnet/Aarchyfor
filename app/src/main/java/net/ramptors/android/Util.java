@@ -1,10 +1,16 @@
 package net.ramptors.android;
 
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.support.annotation.StringRes;
 import android.util.Log;
 import android.view.View;
 import java.io.BufferedReader;
+import java.io.FileNotFoundException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.IOException;
 import java.net.CookieManager;
@@ -20,6 +26,7 @@ import com.fasterxml.jackson.jr.ob.JSON;
 import com.fasterxml.jackson.jr.ob.JSONObjectException;
 
 public class Util {
+  public static final int SELECCIONA_IMAGEN = 1;
   public static final String COORDINATOR = "coordinator";
   public static final String EXTRA_ID = "net.ramptors.android.ID";
   public static final String UTF_8 = "UTF-8";
@@ -45,6 +52,15 @@ public class Util {
     if (view != null) {
       view.setVisibility(visible ? View.VISIBLE : View.GONE);
       view.setEnabled(visible);
+    }
+  }
+  
+  public static Bitmap getBitmap(Activity activity, Intent data) throws FileNotFoundException {
+    if (data != null) {
+      final InputStream stream = activity.getContentResolver().openInputStream(data.getData());
+      return BitmapFactory.decodeStream(stream);
+    } else {
+      return null;
     }
   }
   public static boolean ok(HttpURLConnection c) throws IOException {

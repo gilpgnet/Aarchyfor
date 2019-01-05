@@ -33,7 +33,7 @@ public abstract class Controlador extends AppCompatActivity {
   protected void regresa() {
     NavUtils.navigateUpFromSameTask(this);
   }
-  protected void llenaFormData(FormData formData) {}
+  protected void llenaFormData(FormData formData) throws Exception {}
   protected void muestraError(@StringRes int errorRes, Exception e) {
     muestraError(getString(errorRes), e);
   }

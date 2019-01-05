@@ -8,6 +8,11 @@
     <android.support.v4.widget.NestedScrollView
       android:id="@+id/nestedScrollView"
       style="@style/scroll_responsivo">
+      <ImageView android:id="@+id/avatar" 
+        android:layout_width="match_parent" 
+        android:layout_height="214dp" 
+        android:contentDescription="@string/imagen" 
+        android:scaleType="centerCrop"/>
       <include
         layout="@layout/campos_usuario"
         android:id="@+id/campos"/>
