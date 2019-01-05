@@ -21,7 +21,6 @@ import static net.ramptors.android.Util.UTF_8;
 
 public class FormData {
   private static final String SALTO_DE_LINEA = "\r\n";
-  private final String tag = getClass().getName();
   /** Boundary único  basado en el timestamp. */
   private final String boundary =
       "=========" + System.currentTimeMillis() + "=========";

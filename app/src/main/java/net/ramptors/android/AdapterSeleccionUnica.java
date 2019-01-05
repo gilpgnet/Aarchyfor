@@ -6,14 +6,16 @@ import android.widget.Spinner;
 
 public class AdapterSeleccionUnica extends ArrayAdapter<InfoOpcion> {
   private final String name;
-  private String value;
   private Spinner spinner;
   public AdapterSeleccionUnica(Context context, String name) {
     super(context, android.R.layout.simple_list_item_1);
     this.name = name;
   }
   public void append(FormData formData) {
-    formData.append(name, value);
+    final int seleccion = spinner.getSelectedItemPosition();
+    if (seleccion >= 0) {
+      formData.append(name,  getItem(seleccion).value);
+    }
   }
   public void adapta(Spinner spinner) {
     this.spinner = spinner;

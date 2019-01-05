@@ -56,9 +56,10 @@ public class CtrlUsuarioNuevo extends Controlador
     adapterRoles = new AdapterSeleccionMultiple(this, "roles[]");
     adapterPasatiempo.adapta(pasatiempo);
     adapterRoles.adapta(roles);
-    if (respuesta == null) {
+    if (savedInstanceState == null) {
+      respuesta = null;
       buscaForaneas.get(this, URL_SERVICIOS + "usuarios_busca.php", RespuestaUsuario.class, this);
-    } else {
+    } else if (respuesta != null) {
       adapterPasatiempo.setOpciones(respuesta.pasatiempos);
       adapterRoles.setOpciones(respuesta.roles);
     }
@@ -102,11 +103,6 @@ public class CtrlUsuarioNuevo extends Controlador
     formData.append("nombre", nombre.getText().toString().trim());
     adapterPasatiempo.append(formData);
     adapterRoles.append(formData);
-  }
-  @Override
-  public void regresa() {
-    respuesta = null;
-    super.regresa();
   }
   @Override
   public void publicado(Respuesta respuesta) {

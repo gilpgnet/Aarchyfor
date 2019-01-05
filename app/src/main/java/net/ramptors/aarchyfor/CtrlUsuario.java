@@ -58,10 +58,11 @@ public class CtrlUsuario extends Controlador implements DialogoConfirmaEliminar.
     adapterRoles = new AdapterSeleccionMultiple(this, "roles[]");
     adapterPasatiempo.adapta(pasatiempo);
     adapterRoles.adapta(roles);
-    if (respuesta == null) {
+    if (savedInstanceState == null) {
+      respuesta = null;
       buscaUsuario.get(this, Uri.parse(URL_SERVICIOS + "usuarios_busca.php").buildUpon()
           .appendQueryParameter("cue", extra_id).build().toString(), RespuestaUsuario.class, this);
-    } else {
+    } else if (respuesta != null) {
       adapterPasatiempo.setOpciones(respuesta.pasatiempos);
       adapterRoles.setOpciones(respuesta.roles);
     }
@@ -121,15 +122,9 @@ public class CtrlUsuario extends Controlador implements DialogoConfirmaEliminar.
       postForma.post(this, URL_SERVICIOS + "usuarios_elimina.php", Respuesta.class, this);
     }
   }
-  @Override
-  public void regresa() {
-    respuesta = null;
-    super.regresa();
-  }
 
   @Override
   public void publicado(Respuesta respuesta) {
-    respuesta = null;
     regresa();
   }
 
