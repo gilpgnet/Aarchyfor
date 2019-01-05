@@ -1,6 +1,6 @@
 package net.ramptors.aarchyfor;
 
-public class Infousuario {
+public class InfoUsuario {
   public String avatar;
   public String nombre;
   public String pas_id;

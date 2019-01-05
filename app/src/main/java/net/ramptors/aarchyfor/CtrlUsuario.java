@@ -1,21 +1,31 @@
 package net.ramptors.aarchyfor;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.ListView;
+import net.ramptors.android.AdapterSeleccionMultiple;
+import net.ramptors.android.AdapterSeleccionUnica;
 import net.ramptors.android.Controlador;
 import net.ramptors.android.FormData;
+import net.ramptors.android.GetRespuesta;
+import net.ramptors.android.PostForma;
+import net.ramptors.android.Respuesta;
+import net.ramptors.android.Util;
+import static net.ramptors.aarchyfor.CtrlUsuarios.URL_SERVICIOS;
 import static net.ramptors.android.Util.texto;
 import static net.ramptors.android.Util.EXTRA_ID;
 
 public class CtrlUsuario extends Controlador
-    implements DialogoConfirmaEliminar.EliminarConfirmado,
-    LoaderManager.LoaderCallbacks<Respuesta>  {
-  private String extra_id;
+    implements DialogoConfirmaEliminar.EliminarConfirmado, GetRespuesta.RecibeRespuesta<RespuestaUsuario>,
+    PostForma.Publicado<Respuesta> {
+  private static final GetRespuesta<RespuestaUsuario> buscaUsuario = new GetRespuesta<RespuestaUsuario>();
+  private static final PostForma<Respuesta> postForma = new PostForma<Respuesta>();
   private static RespuestaUsuario respuesta;
+  private String extra_id;
   private EditText match;
   private EditText nombre;
   private Spinner pasatiempo;
@@ -29,44 +39,20 @@ public class CtrlUsuario extends Controlador
     setContentView(R.layout.form_usuario);
     extra_id = getIntent().getStringExtra(EXTRA_ID);
     setTitle(extra_id);
-    match = view.findViewWithId(R.id.match);
-    nombre = view.findViewWithId(R.id.nombre);
-    pasatiempo = view.findViewWithId(R.id.pasatiempo);
-    roles = view.findViewWithId(R.id.roles);
+    match = findViewById(R.id.match);
+    nombre = findViewById(R.id.nombre);
+    pasatiempo = findViewById(R.id.pasatiempo);
+    roles = findViewById(R.id.roles);
     adapterPasatiempo.adapta(pasatiempo);
     adapterRoles.adapta(roles);
-    if (respuesta != null) {
-      adapterPasatiempo.setOpciones(data.pasatiempos);
-      adapterRoles.setOpciones(data.roles);
+    if (respuesta == null) {
+      buscaUsuario.get(this, Uri.parse(URL_SERVICIOS + "usuarios_busca.php").buildUpon()
+        .appendQueryParameter("cue", extra_id).build().toString(), RespuestaUsuario.class, this);
     } else {
-      getSupportLoaderManager().initLoader(0, null, new LoaderManager.LoaderCallbacks<RespuestaUsuario>() {
-        @Override
-        public Loader<RespuestaUsuario> onCreateLoader(int id, Bundle args) {
-          return new GetTaskLoader(this, new RespuestaUsuario(), Uri.parse(URL_SERVICIO + "usuarios_busca.php").buildUpon()
-          .appendQueryParameter("cue", extra_id).build().toString());
-        }
-        @Override
-        public void onLoadFinished(Loader<RespuestaUsuario> loader, RespuestaUsuario data) {
-          try {
-            if (data == null) {
-              throw new Exception(getString(R.string.error_procesando_respuesta));
-            } else if (!isNullOrEmpty(data.error)) {
-              throw new Exception(data.error);
-            } else {
-              respuesta = data;
-              nombre.setText(texto(data.modelo.nombre));
-              adapterPasatiempo.setOpciones(data.pasatiempos);
-              adapterRoles.setOpciones(data.roles);
-            }      
-          } catch (Exception e) {
-            muestraError(this, tag, "Error procesando respuesta.", e);
-          }
-        }
-        @Override
-        public void onLoaderReset(Loader<RespuestaUsuario> loader) {
-        }  
-       });
+      adapterPasatiempo.setOpciones(respuesta.pasatiempos);
+      adapterRoles.setOpciones(respuesta.roles);
     }
+    postForma.continua(this, this);
   }
   @Override
   public boolean onCreateOptionsMenu(Menu menu) {
@@ -80,47 +66,49 @@ public class CtrlUsuario extends Controlador
        regresa();
        return true;
       case R.id.action_guarda:
-        getSupportLoaderManager().restartLoader(1, null, this);
+        postForma.post(this, URL_SERVICIOS + "usuarios_modifica.php", Respuesta.class, this);
         return true;
       case R.id.action_elimina:
-        DialogoConfirmaEliminar.confirma(getSupportFragmentManager())));
+        DialogoConfirmaEliminar.confirma(getSupportFragmentManager());
         return true;
       default:
         return super.onOptionsItemSelected(item);
     }
   }
   @Override
+  public void recibe(RespuestaUsuario respuesta) {
+    CtrlUsuario.respuesta = respuesta;
+    nombre.setText(texto(respuesta.modelo.nombre));
+    adapterPasatiempo.setOpciones(respuesta.pasatiempos);
+    adapterRoles.setOpciones(respuesta.roles);
+}
+  @Override
   protected void llenaFormData(FormData formData) {
     formData.append("cue", extra_id);
     formData.append("match", match.getText().toString().trim());
-    formData.append("nombre", campos.nombre.getText().toString().trim());
+    formData.append("nombre", nombre.getText().toString().trim());
     adapterPasatiempo.append(formData);
     adapterRoles.append(formData);
   }
   @Override
   public void eliminarConfirmado() {
     if (extra_id != null) {
-      getSupportLoaderManager().restartLoader(2, null, this);
+      postForma.post(this, URL_SERVICIOS + "usuarios_elimina.php", Respuesta.class, this);
     }
   }
   @Override
-  public Loader<Respuesta> onCreateLoader(int id, Bundle args) {
-    final String url = id == 1 ? "usuarios_modifica.php": "usuarios_elimina.php";
-    return new PostTaskLoader(this, URL_SERVICIO + url);
+  public void publicado(Respuesta respuesta)  {
+    regresa();
   }
   @Override
-  public void onLoadFinished(Loader<Respuesta> loader, RespuestaFilas data) {
-    try {
-      if (!isNullOrEmpty(data.error)) {
-        throw new Exception(data.error);
-      } else {
-        regresa();
-      }      
-    } catch (Exception e) {
-      muestraError(this, tag, "Error procesando respuesta.", e);
+  protected void onDestroy() {
+    postForma.setControlador(null);
+    if (respuesta == null) {
+      buscaUsuario.setControlador(null);
+    } else {
+      respuesta.pasatiempos = adapterPasatiempo.getOpciones();
+      respuesta.roles = adapterRoles.getOpciones();
     }
-  }
-  @Override
-  public void onLoaderReset(Loader<Respuesta> loader) {
+    super.onDestroy();
   }
 }

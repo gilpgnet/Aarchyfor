@@ -1,15 +1,10 @@
 package net.ramptors.android;
 
 import android.content.Context;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
 
-public class AdapterSeleccionUnica extends ArrayAdapter<InfoOpcion>
-    implements OnItemSelectedListener {
+public class AdapterSeleccionUnica extends ArrayAdapter<InfoOpcion> {
   private final String name;
   private String value;
   private Spinner spinner;
@@ -23,7 +18,6 @@ public class AdapterSeleccionUnica extends ArrayAdapter<InfoOpcion>
   public void adapta(Spinner spinner) {
     this.spinner = spinner;
     spinner.setAdapter(this);
-    spinner.setOnItemSelectedListener(this);
   }
   public void setOpciones(InfoOpcion[] opciones) {
     clear();
@@ -31,23 +25,22 @@ public class AdapterSeleccionUnica extends ArrayAdapter<InfoOpcion>
       addAll(opciones);
     }
     int seleccion = -1;
-    for (int i = 0, longitud = this.opciones.size(); i < longitud; i++) {
-      final InfoOpcion fila = this.opciones.get(i);
+    for (int i = 0, longitud = opciones.length; i < longitud; i++) {
+      final InfoOpcion fila = opciones[i];
       if (fila != null && fila.selected) {
         seleccion = i;
       }
     }
-    notifyDataSetChanged();
     spinner.setSelection(seleccion);
   }
-  @Override
-  public void onItemSelected(AdapterView<?> parent, View sel, int pos,
-      long id) {
-    final InfoOpcion item = (InfoOpcion) spinner.getSelectedItem();
-    value = item == null ? null : item.value;
-  }
-  @Override
-  public void onNothingSelected(AdapterView<?> parent) {
-    value = null;
+  public InfoOpcion[] getOpciones() {
+    final int seleccion = spinner.getSelectedItemPosition();
+    final InfoOpcion[] opciones = new InfoOpcion[getCount()];
+    for(int i = 0, length = opciones.length; i < length; i++){
+      final InfoOpcion opcion = getItem(i);
+      opciones[i] = opcion;
+      opcion.selected = i == seleccion;
+    }
+    return opciones;
   }
 }

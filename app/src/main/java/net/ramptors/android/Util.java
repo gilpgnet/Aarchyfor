@@ -2,6 +2,8 @@ package net.ramptors.android;
 
 import android.content.Context;
 import android.support.annotation.StringRes;
+import android.util.Log;
+import android.view.View;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.IOException;
@@ -9,10 +11,11 @@ import java.net.CookieManager;
 import java.net.CookieStore;
 import java.net.HttpCookie;
 import java.net.HttpURLConnection;
-import java.net.URL;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Executors;
 import com.fasterxml.jackson.jr.ob.JSON;
 import com.fasterxml.jackson.jr.ob.JSONObjectException;
 
@@ -20,6 +23,7 @@ public class Util {
   public static final String COORDINATOR = "coordinator";
   public static final String EXTRA_ID = "net.ramptors.android.ID";
   public static final String UTF_8 = "UTF-8";
+  public static final Executor EXECUTOR = Executors.newSingleThreadExecutor();
   public static String texto(final String s) {
     return s == null ? "" : s;
   }
@@ -36,6 +40,12 @@ public class Util {
     final String localizedMessage = e.getLocalizedMessage();
     return isNullOrEmpty(localizedMessage)
         ? e.toString() : localizedMessage;
+  }
+  public static void setVisible(View view, boolean visible) {
+    if (view != null) {
+      view.setVisibility(visible ? View.VISIBLE : View.GONE);
+      view.setEnabled(visible);
+    }
   }
   public static boolean ok(HttpURLConnection c) throws IOException {
     final int status = c.getResponseCode();
@@ -59,7 +69,7 @@ public class Util {
         cookieManager.getCookieStore().getCookies();
     if (!cookies.isEmpty()) {
       final StringBuilder sb = new StringBuilder();
-      final Iterator<HttpCookie> it = cookies.Iterator();
+      final Iterator<HttpCookie> it = cookies.iterator();
       if (it.hasNext()) {
         sb.append(it.next().toString());
       }

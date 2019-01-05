@@ -1,6 +1,7 @@
 package net.ramptors.android;
 
 import android.content.Context;
+import android.util.SparseBooleanArray;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
@@ -12,10 +13,10 @@ public class AdapterSeleccionMultiple extends ArrayAdapter<InfoOpcion> {
     this.name = name;
   }
   public void append(FormData formData) {
-    SparseBooleanArray sparseBooleanArray = lista.getCheckedItemPositions();
-    for(int i = 0, count = lista.getCount(); i < count; i++){
-        if(sparseBooleanArray.get(i)) {
-          formData.append(name, lista.getItemAtPosition(i).value);
+    final SparseBooleanArray seleccion = lista.getCheckedItemPositions();
+    for(int i = 0, count = getCount(); i < count; i++){
+        if(seleccion.get(i)) {
+          formData.append(name, getItem(i).value);
         }
     }
   }
@@ -29,5 +30,15 @@ public class AdapterSeleccionMultiple extends ArrayAdapter<InfoOpcion> {
     if (opciones != null) {
       addAll(opciones);
     }
+  }
+  public InfoOpcion[] getOpciones() {
+    final InfoOpcion[] opciones = new InfoOpcion[getCount()];
+    final SparseBooleanArray seleccion = lista.getCheckedItemPositions();
+    for(int i = 0, length = opciones.length; i < length; i++){
+      final InfoOpcion opcion = getItem(i);
+      opciones[i] = opcion;
+      opcion.selected = seleccion.get(i);
+    }
+    return opciones;
   }
 }

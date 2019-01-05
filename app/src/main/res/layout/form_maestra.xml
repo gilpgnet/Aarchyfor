@@ -4,12 +4,9 @@
   style="@style/main" 
   android:id="@+id/coordinator" 
   android:tag="coordinator">
-  <android.support.v4.widget.NestedScrollView style="@style/scroll_responsivo" 
-    android:id="@+id/nestedScrollView">
-    <TextView android:layout_width="match_parent" 
-      android:layout_height="wrap_content" 
-      android:text="@string/listado_vacio" />
-  </android.support.v4.widget.NestedScrollView>
+  <TextView  android:id="@+id/vacio" 
+    style="@style/scroll_responsivo" 
+    android:text="@string/listado_vacio" />
   <ListView android:id="@+id/lista" 
     style="@style/scroll_responsivo" />
 </android.support.design.widget.CoordinatorLayout>

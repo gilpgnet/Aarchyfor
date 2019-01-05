@@ -37,7 +37,7 @@ public abstract class Controlador extends AppCompatActivity {
   protected void muestraError(@StringRes int errorRes, Exception e) {
     muestraError(getString(errorRes), e);
   }
-  protected void muestraError(String error, Exception e) {
+  public void muestraError(String error, Exception e) {
     if (e != null) {
       Log.w(tag, error, e);
       muestraMensaje(getMensaje(e));

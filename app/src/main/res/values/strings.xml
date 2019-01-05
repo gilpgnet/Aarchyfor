@@ -23,5 +23,4 @@
   <string name="usuario_no_encontrado">Usuario no encontrado.</string>
   <string name="confirma_eliminar">Confirma la Eliminación</string>
   <string name="perderas_datos">Perderás los datos.</string>
-  <string name="error_procesando_respuesta">Error procesando respuesta.</string>
 </resources>

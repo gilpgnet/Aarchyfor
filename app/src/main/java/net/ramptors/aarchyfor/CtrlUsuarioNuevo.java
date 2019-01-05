@@ -1,7 +1,5 @@
 package net.ramptors.aarchyfor;
 
-import android.arch.lifecycle.ViewModelProviders;
-import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.view.View;
 import android.view.Menu;
@@ -9,16 +7,22 @@ import android.view.MenuItem;
 import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.ListView;
-import net.ramptors.aususeg.databinding.FormUsuarioNuevoBinding;
-import android.support.v4.app.LoaderManager;
+import net.ramptors.android.AdapterSeleccionMultiple;
+import net.ramptors.android.AdapterSeleccionUnica;
 import net.ramptors.android.Controlador;
 import net.ramptors.android.FormData;
+import net.ramptors.android.GetRespuesta;
+import net.ramptors.android.PostForma;
+import net.ramptors.android.Respuesta;
 import net.ramptors.android.Util;
-import static net.ramptors.aarchyfor.CtrlUsuarios.URL_SERVICIO;
+import static net.ramptors.aarchyfor.CtrlUsuarios.URL_SERVICIOS;
 import static net.ramptors.android.Util.texto;
 
 public class CtrlUsuarioNuevo extends Controlador
-    implements LoaderManager.LoaderCallbacks<Respuesta> {
+    implements GetRespuesta.RecibeRespuesta<RespuestaUsuario>,
+    PostForma.Publicado<Respuesta> {
+  private static final GetRespuesta<RespuestaUsuario> buscaForaneas = new GetRespuesta<RespuestaUsuario>();
+  private static final PostForma<Respuesta> postForma = new PostForma<Respuesta>();
   private static RespuestaUsuario respuesta;
   private EditText cue;
   private EditText match;
@@ -32,43 +36,20 @@ public class CtrlUsuarioNuevo extends Controlador
     super.onCreate(savedInstanceState);
     configuraRegreso();
     setContentView(R.layout.form_usuario_nuevo);
-    cue = view.findViewWithId(R.id.cue);
-    match = view.findViewWithId(R.id.match);
-    nombre = view.findViewWithId(R.id.nombre);
-    pasatiempo = view.findViewWithId(R.id.pasatiempo);
-    roles = view.findViewWithId(R.id.roles);
+    cue = findViewById(R.id.cue);
+    match = findViewById(R.id.match);
+    nombre = findViewById(R.id.nombre);
+    pasatiempo = findViewById(R.id.pasatiempo);
+    roles = findViewById(R.id.roles);
     adapterPasatiempo.adapta(pasatiempo);
     adapterRoles.adapta(roles);
-    if (respuesta != null) {
-      adapterPasatiempo.setOpciones(data.pasatiempos);
-      adapterRoles.setOpciones(data.roles);
+    if (respuesta == null) {
+      buscaForaneas.get(this, URL_SERVICIOS + "usuarios_busca.php", RespuestaUsuario.class, this);
     } else {
-      getSupportLoaderManager().initLoader(0, null, new LoaderManager.LoaderCallbacks<RespuestaUsuario>() {
-        @Override
-        public Loader<RespuestaUsuario> onCreateLoader(int id, Bundle args) {
-          return new GetTaskLoader(this, new RespuestaUsuario(), URL_SERVICIO + "usuarios_busca.php");
-        }
-        @Override
-        public void onLoadFinished(Loader<RespuestaUsuario> loader, RespuestaUsuario data) {
-          try {
-            if (data == null) {
-              throw new Exception(getString(R.string.error_procesando_respuesta));
-            } else if (!isNullOrEmpty(data.error)) {
-              throw new Exception(data.error);
-            } else {
-              respuesta = data;
-              adapterPasatiempo.setOpciones(data.pasatiempos);
-              adapterRoles.setOpciones(data.roles);
-            }      
-          } catch (Exception e) {
-            muestraError(this, tag, "Error procesando respuesta.", e);
-          }
-        }
-        @Override
-        public void onLoaderReset(Loader<RespuestaUsuario> loader) {
-        }  
-       });
+      adapterPasatiempo.setOpciones(respuesta.pasatiempos);
+      adapterRoles.setOpciones(respuesta.roles);
     }
+    postForma.continua(this, this);
   }
   @Override
   public boolean onCreateOptionsMenu(Menu menu) {
@@ -79,11 +60,17 @@ public class CtrlUsuarioNuevo extends Controlador
   public boolean onOptionsItemSelected(MenuItem item) {
     switch (item.getItemId()) {
       case R.id.action_guarda:
-        getSupportLoaderManager().restartLoader(1, null, this);
+        postForma.post(this, URL_SERVICIOS + "usuarios_agrega.php", Respuesta.class, this);
         return true;
       default:
         return super.onOptionsItemSelected(item);
     }
+  }
+  @Override
+  public void recibe(RespuestaUsuario respuesta) {
+    CtrlUsuarioNuevo.respuesta = respuesta;
+    adapterPasatiempo.setOpciones(respuesta.pasatiempos);
+    adapterRoles.setOpciones(respuesta.roles);
   }
   @Override
   protected void llenaFormData(FormData formData) {
@@ -94,22 +81,18 @@ public class CtrlUsuarioNuevo extends Controlador
     adapterRoles.append(formData);
   }
   @Override
-  public Loader<Respuesta> onCreateLoader(int id, Bundle args) {
-    return new PostTaskLoader(this, URL_SERVICIO + "usuarios_agrega.php");
+  public void publicado(Respuesta respuesta)  {
+    regresa();
   }
   @Override
-  public void onLoadFinished(Loader<Respuesta> loader, RespuestaFilas data) {
-    try {
-      if (!isNullOrEmpty(data.error)) {
-        throw new Exception(data.error);
-      } else {
-        regresa();
-      }      
-    } catch (Exception e) {
-      muestraError(this, tag, "Error procesando respuesta.", e);
+  protected void onDestroy() {
+    postForma.setControlador(null);
+    if (respuesta == null) {
+      buscaForaneas.setControlador(null);
+    } else {
+      respuesta.pasatiempos = adapterPasatiempo.getOpciones();
+      respuesta.roles = adapterRoles.getOpciones();
     }
-  }
-  @Override
-  public void onLoaderReset(Loader<Respuesta> loader) {
+    super.onDestroy();
   }
 }

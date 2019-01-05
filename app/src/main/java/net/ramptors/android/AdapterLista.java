@@ -1,6 +1,7 @@
 package net.ramptors.android;
 
 import android.content.Context;
+import android.net.Uri;
 import android.support.annotation.LayoutRes;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -20,7 +21,6 @@ public class AdapterLista extends ArrayAdapter<InfoFila> {
   private final int layoutRes;
   public AdapterLista(Context context, @LayoutRes int layoutRes) {
     super(context, layoutRes);
-    this.tipoDetalle = tipoDetalle;
     this.layoutRes = layoutRes;
   }
   public void setFilas(InfoFila[] filas) {
@@ -40,7 +40,7 @@ public class AdapterLista extends ArrayAdapter<InfoFila> {
     final InfoFila modelo = getItem(posicion);
     texto1.setText(texto(modelo.texto1));
     if (imagen != null) {
-      imagen.setImageURI(isNullOrEmpty(imagen) ? null : modelo.imagen);
+      imagen.setImageURI(isNullOrEmpty(modelo.imagen) ? null : Uri.parse(modelo.imagen));
     }
     if (texto2 != null) {
       texto2.setText(texto(modelo.texto2));
