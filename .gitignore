@@ -7,3 +7,7 @@ gradlew
 gradlew.bat
 build
 logcat.txt
+bin/
+gen/
+obj/
+libs/*/*.so
