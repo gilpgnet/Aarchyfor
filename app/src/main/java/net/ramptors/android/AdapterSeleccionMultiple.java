@@ -30,6 +30,10 @@ public class AdapterSeleccionMultiple extends ArrayAdapter<InfoOpcion> {
     if (opciones != null) {
       addAll(opciones);
     }
+    for (int i = 0, longitud = opciones.length; i < longitud; i++) {
+      final InfoOpcion fila = opciones[i];
+      lista.setItemChecked(i, fila != null && fila.selected);
+    }
   }
   public InfoOpcion[] getOpciones() {
     final InfoOpcion[] opciones = new InfoOpcion[getCount()];

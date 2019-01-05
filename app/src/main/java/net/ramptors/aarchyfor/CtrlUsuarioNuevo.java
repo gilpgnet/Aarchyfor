@@ -16,6 +16,7 @@ import net.ramptors.android.AdapterSeleccionMultiple;
 import net.ramptors.android.AdapterSeleccionUnica;
 import net.ramptors.android.Controlador;
 import net.ramptors.android.FormData;
+import net.ramptors.android.InfoOpcion;
 import net.ramptors.android.GetRespuesta;
 import net.ramptors.android.PostForma;
 import net.ramptors.android.Respuesta;
@@ -37,8 +38,8 @@ public class CtrlUsuarioNuevo extends Controlador
   private EditText nombre;
   private Spinner pasatiempo;
   private ListView roles;
-  private final AdapterSeleccionUnica adapterPasatiempo = new AdapterSeleccionUnica(this, "pasatiempo");
-  private final AdapterSeleccionMultiple adapterRoles = new AdapterSeleccionMultiple(this, "roles[]");
+  private AdapterSeleccionUnica adapterPasatiempo;
+  private AdapterSeleccionMultiple adapterRoles;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +52,8 @@ public class CtrlUsuarioNuevo extends Controlador
     nombre = findViewById(R.id.nombre);
     pasatiempo = findViewById(R.id.pasatiempo);
     roles = findViewById(R.id.roles);
+    adapterPasatiempo = new AdapterSeleccionUnica(this, "pasatiempo");
+    adapterRoles = new AdapterSeleccionMultiple(this, "roles[]");
     adapterPasatiempo.adapta(pasatiempo);
     adapterRoles.adapta(roles);
     if (respuesta == null) {
@@ -100,7 +103,11 @@ public class CtrlUsuarioNuevo extends Controlador
     adapterPasatiempo.append(formData);
     adapterRoles.append(formData);
   }
-
+  @Override
+  public void regresa() {
+    respuesta = null;
+    super.regresa();
+  }
   @Override
   public void publicado(Respuesta respuesta) {
     regresa();

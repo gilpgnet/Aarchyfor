@@ -39,8 +39,8 @@ public class CtrlUsuario extends Controlador implements DialogoConfirmaEliminar.
   private EditText nombre;
   private Spinner pasatiempo;
   private ListView roles;
-  private final AdapterSeleccionUnica adapterPasatiempo = new AdapterSeleccionUnica(this, "pasatiempo");
-  private final AdapterSeleccionMultiple adapterRoles = new AdapterSeleccionMultiple(this, "roles[]");
+  private AdapterSeleccionUnica adapterPasatiempo;
+  private AdapterSeleccionMultiple adapterRoles;
 
   @Override
   protected void onCreate(Bundle savedInstanceState) {
@@ -54,6 +54,8 @@ public class CtrlUsuario extends Controlador implements DialogoConfirmaEliminar.
     nombre = findViewById(R.id.nombre);
     pasatiempo = findViewById(R.id.pasatiempo);
     roles = findViewById(R.id.roles);
+    adapterPasatiempo = new AdapterSeleccionUnica(this, "pasatiempo");
+    adapterRoles = new AdapterSeleccionMultiple(this, "roles[]");
     adapterPasatiempo.adapta(pasatiempo);
     adapterRoles.adapta(roles);
     if (respuesta == null) {
@@ -98,7 +100,7 @@ public class CtrlUsuario extends Controlador implements DialogoConfirmaEliminar.
     nombre.setText(texto(respuesta.modelo.nombre));
     adapterPasatiempo.setOpciones(respuesta.pasatiempos);
     adapterRoles.setOpciones(respuesta.roles);
-    avatar.setImageURI(isNullOrEmpty(respuesta.modelo.avatar) ? null : Uri.parse(respuesta.modelo.avatar));
+    avatar.setImageBitmap(isNullOrEmpty(respuesta.modelo.avatar) ? null : getBitmap(respuesta.modelo.avatar));
   }
 
   @Override
@@ -119,9 +121,15 @@ public class CtrlUsuario extends Controlador implements DialogoConfirmaEliminar.
       postForma.post(this, URL_SERVICIOS + "usuarios_elimina.php", Respuesta.class, this);
     }
   }
+  @Override
+  public void regresa() {
+    respuesta = null;
+    super.regresa();
+  }
 
   @Override
   public void publicado(Respuesta respuesta) {
+    respuesta = null;
     regresa();
   }
 

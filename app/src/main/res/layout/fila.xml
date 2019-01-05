@@ -3,11 +3,11 @@
   xmlns:tools="http://schemas.android.com/tools" 
   android:layout_width="match_parent" 
   android:layout_height="wrap_content" 
-  android:orientation="vertical">
+  android:orientation="horizontal">
   <ImageView android:id="@+id/imagen" 
     android:tag="imagen" 
-    android:layout_width="100dp" 
-    android:layout_height="100dp" 
+    android:layout_width="@dimen/ancho_imagen" 
+    android:layout_height="@dimen/ancho_imagen" 
     android:contentDescription="@string/imagen" 
     android:scaleType="centerInside" 
     android:layout_marginTop="8dp" 

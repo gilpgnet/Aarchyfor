@@ -8,6 +8,7 @@ import android.view.View;
 import android.content.Intent;
 import net.ramptors.android.AdapterLista;
 import net.ramptors.android.GetRespuesta;
+import net.ramptors.android.InfoFila;
 import net.ramptors.android.RespuestaFilas;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
@@ -20,9 +21,9 @@ import static net.ramptors.android.Util.isNullOrEmpty;
 
 public class CtrlUsuarios extends Controlador
    implements OnItemClickListener, GetRespuesta.RecibeRespuesta<RespuestaFilas> {
-  public static final String URL_SERVICIOS = "https://archyfor.000webhostapp.com/servicios";
+  public static final String URL_SERVICIOS = "https://archyfor.000webhostapp.com/servicios/";
   private static final GetRespuesta<RespuestaFilas> consultaFilas = new GetRespuesta<RespuestaFilas>();
-  private final AdapterLista adapter = new AdapterLista(this, R.layout.fila);
+  private AdapterLista adapter;
   private ListView lista;
   private TextView vacio;
   @Override
@@ -31,8 +32,10 @@ public class CtrlUsuarios extends Controlador
     setContentView(R.layout.form_maestra);
     lista = findViewById(R.id.lista);
     vacio = findViewById(R.id.vacio);
+    adapter = new AdapterLista(this, R.layout.fila);
+    lista.setOnItemClickListener(this);
     lista.setAdapter(adapter);
-    consultaFilas.get(this, URL_SERVICIOS + "usuarios_consulta.php", RespuestaFilas.class, this);
+    consultaFilas.get(this, URL_SERVICIOS + "usuarios_lista.php", RespuestaFilas.class, this);
   }
   @Override
   public boolean onCreateOptionsMenu(Menu menu) {
@@ -46,7 +49,7 @@ public class CtrlUsuarios extends Controlador
         startActivity(new Intent(this, CtrlUsuarioNuevo.class));
         return true;
       case R.id.action_actualiza:
-        consultaFilas.get(this, URL_SERVICIOS + "usuarios_consulta.php", RespuestaFilas.class, this);
+        consultaFilas.get(this, URL_SERVICIOS + "usuarios_lista.php", RespuestaFilas.class, this);
        return true;
       default:
         return super.onOptionsItemSelected(item);
@@ -55,7 +58,8 @@ public class CtrlUsuarios extends Controlador
   @Override
   public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
     final Intent intent = new Intent(this, CtrlUsuario.class);
-    intent.putExtra(EXTRA_ID, id);
+    final InfoFila fila = adapter.getItem(position);
+    intent.putExtra(EXTRA_ID, fila.id);
     startActivity(intent);
   }
   @Override

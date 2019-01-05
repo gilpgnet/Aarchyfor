@@ -2,5 +2,6 @@
   <dimen name="activity_vertical_margin">16dp</dimen>
   <dimen name="activity_horizontal_margin">16dp</dimen>
   <dimen name="ancho_imagen">150dp</dimen>
+  <dimen name="alto_imagen">245dp</dimen>
   <dimen name="ancho_principal">600dp</dimen>
 </resources>
