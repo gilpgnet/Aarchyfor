@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout
+  xmlns:android="http://schemas.android.com/apk/res/android">
+  <android.support.design.widget.CoordinatorLayout
+    style="@style/main"
+    android:id="@+id/coordinator"
+    android:tag="coordinator">
+    <android.support.v4.widget.NestedScrollView
+      android:id="@+id/nestedScrollView"
+      style="@style/scroll_responsivo">
+      <include
+        layout="@layout/campos_usuario"
+        android:id="@+id/campos"/>
+    </android.support.v4.widget.NestedScrollView>
+  </android.support.design.widget.CoordinatorLayout>
+</layout>

@@ -1,0 +1,18 @@
+apply plugin: 'com.android.application'
+android {
+  compileSdkVersion 27
+  defaultConfig {
+    applicationId "net.ramptors.aarchyfor"
+    minSdkVersion 15
+    targetSdkVersion 27
+    versionCode 1
+    versionName "1.0"
+  }
+}
+dependencies {
+  def version_soporte = "27.1.1"
+  implementation "com.android.support:appcompat-v7:$version_soporte"
+  implementation "com.android.support:design:$version_soporte"
+  implementation "com.android.support.constraint:constraint-layout:1.1.0"
+  implementation "com.fasterxml.jackson.jr:jackson-jr-objects:2.9.6"
+}

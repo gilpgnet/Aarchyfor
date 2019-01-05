@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.design.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android" 
+  xmlns:app="http://schemas.android.com/apk/res-auto" 
+  style="@style/main" 
+  android:id="@+id/coordinator" 
+  android:tag="coordinator">
+  <android.support.v4.widget.NestedScrollView android:id="@+id/nestedScrollView" 
+    style="@style/scroll_responsivo">
+    <android.support.v7.widget.LinearLayoutCompat android:id="@+id/linearLayout" 
+      android:layout_width="match_parent" 
+      android:layout_height="wrap_content" 
+      android:orientation="vertical">
+      <android.support.design.widget.TextInputLayout android:id="@+id/campoCue" 
+        android:layout_width="match_parent" 
+        android:layout_height="wrap_content" 
+        app:counterEnabled="true" 
+        app:counterMaxLength="16">
+        <android.support.design.widget.TextInputEditText android:id="@+id/cue" 
+          android:layout_width="match_parent" 
+          android:layout_height="wrap_content" 
+          android:hint="@string/cue_descripcion" 
+          android:inputType="text" 
+          android:maxLength="16"/>
+      </android.support.design.widget.TextInputLayout>
+      <include layout="@layout/campos_usuario" 
+        android:id="@+id/campos"/>
+    </android.support.v7.widget.LinearLayoutCompat>
+  </android.support.v4.widget.NestedScrollView>
+</android.support.design.widget.CoordinatorLayout>

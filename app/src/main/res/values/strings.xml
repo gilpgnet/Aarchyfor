@@ -1,0 +1,27 @@
+<resources>
+  <string name="app_name">Aususeg</string>
+  <string name="agrega">Agregar</string>
+  <string name="listado_vacio">Listado vacío.</string>
+  <string name="imagen">Imagen</string>
+  <string name="pasatiempo">Pasatiempo</string>
+  <string name="usuario">Usuario</string>
+  <string name="usuario_nuevo">Usuario Nuevo</string>
+  <string name="usuarios">Usuarios</string>
+  <string name="roles">Roles</string>
+  <string name="guarda">Guardar</string>
+  <string name="elimina">Eliminar</string>
+  <string name="cue_descripcion">Cue (5 a 16 letras o dígitos)</string>
+  <string name="match_descripcion">Match (5 a 25 caracteres)</string>
+  <string name="nombre">Nombre</string>
+  <string name="actualizar">Actualizar</string>
+  <string name="terminar_sesion">Terminar Sesión</string>
+  <string name="inicio_de_sesion">Inicio de Sesión</string>
+  <string name="cue">Cue</string>
+  <string name="match">Match</string>
+  <string name="iniciar_sesion">Iniciar Sesión</string>
+  <string name="texto">Texto</string>
+  <string name="usuario_no_encontrado">Usuario no encontrado.</string>
+  <string name="confirma_eliminar">Confirma la Eliminación</string>
+  <string name="perderas_datos">Perderás los datos.</string>
+  <string name="error_procesando_respuesta">Error procesando respuesta.</string>
+</resources>
